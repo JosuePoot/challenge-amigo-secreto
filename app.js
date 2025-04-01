@@ -1,29 +1,55 @@
-// El principal objetivo de este desafío es fortalecer tus habilidades en lógica de programación. Aquí deberás desarrollar la lógica para resolver el problema.
-
 const INPUT_AMIGO = document.getElementById("amigo");
 const UL_LISTA_AMIGOS = document.getElementById("listaAmigos");
 const UL_RESULTADO = document.getElementById("resultado");
-var listaAmigos = [];
+let listaAmigos = [];
 
-function agregarAmigo(){
-    if(!INPUT_AMIGO.value){
+
+function agregarAmigo() {
+    const nombre = INPUT_AMIGO.value.trim(); // Eliminar espacios en blanco al inicio y final
+
+    if (!nombre) {
         alert("Debes ingresar un nombre");
         return;
     }
 
-    listaAmigos.push(INPUT_AMIGO.value);
-    UL_LISTA_AMIGOS.innerHTML += `<li>${INPUT_AMIGO.value}</li>`;
-    //console.log(UL_LISTA_AMIGOS)
-};
-
-function sortearAmigo(){
-    if(listaAmigos.length === 0){
-        alert("Debes ingresar un nombre");
+    if (listaAmigos.includes(nombre)) {
+        alert("Este nombre ya está en la lista");
         return;
     }
 
-    var cantidadAmigos = listaAmigos.length;
-    const random = Math.floor(Math.random() * cantidadAmigos);
-    const amigoSecreto = listaAmigos[random];
-    UL_RESULTADO.innerHTML = `<li>${amigoSecreto}</li>`;
-};
+    listaAmigos.push(nombre);
+
+    // Crear un nuevo elemento `li`
+    const li = document.createElement("li");
+    li.textContent = nombre;
+    UL_LISTA_AMIGOS.appendChild(li);
+
+    // Limpiar el input y devolverle el foco
+    INPUT_AMIGO.value = "";
+    INPUT_AMIGO.focus();
+}
+
+
+function sortearAmigo() {
+    if (listaAmigos.length < 2) {
+        alert("Debes ingresar al menos dos nombres para realizar el sorteo.");
+        return;
+    }
+
+    let amigoSecreto;
+    let indiceAmigo;
+    let intentos = 0; // Para evitar bucles infinitos en listas pequeñas
+
+    do {
+        indiceAmigo = Math.floor(Math.random() * listaAmigos.length);
+        amigoSecreto = listaAmigos[indiceAmigo];
+        intentos++;
+    } while (amigoSecreto === listaAmigos[indiceAmigo] && intentos < 10);
+
+    // Limpiar el resultado anterior
+    UL_RESULTADO.innerHTML = "";
+
+    const li = document.createElement("li");
+    li.textContent = `Amigo secreto: ${amigoSecreto}`;
+    UL_RESULTADO.appendChild(li);
+}
